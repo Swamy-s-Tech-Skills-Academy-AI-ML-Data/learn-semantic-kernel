@@ -1,8 +1,12 @@
-﻿public class Pizza
+﻿namespace BuilderPatternDemo.Builders;
+
+public sealed class Pizza
 {
-    public string Dough { get; set; }
-    public string Sauce { get; set; }
-    public string Toppings { get; set; }
+    public string Dough { get; set; } = string.Empty;
+
+    public string Sauce { get; set; } = string.Empty;
+
+    public string Toppings { get; set; } = string.Empty;
 
     public override string ToString()
     {

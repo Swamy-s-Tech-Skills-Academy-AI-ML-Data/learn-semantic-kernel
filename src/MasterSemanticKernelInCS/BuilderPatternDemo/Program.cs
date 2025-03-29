@@ -6,5 +6,5 @@ var builder = new PizzaBuilder()
     .SetToppings("Cheese and pepperoni")
     .Build();
 
-Console.WriteLine(builder);
+WriteLine(builder);
 

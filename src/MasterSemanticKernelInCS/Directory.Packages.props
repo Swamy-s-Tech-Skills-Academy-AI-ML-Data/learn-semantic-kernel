@@ -1,8 +1,10 @@
 <Project>
-  <PropertyGroup>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-  </PropertyGroup>
-  <ItemGroup>
-  <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.7.0.110445" />
-  </ItemGroup>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageVersion Include="SonarAnalyzer.CSharp" Version="10.7.0.110445" />
+        <PackageVersion Include="Microsoft.SemanticKernel" Version="1.32.0" />
+	</ItemGroup>
 </Project>

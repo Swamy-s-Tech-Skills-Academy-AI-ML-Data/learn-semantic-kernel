@@ -5,6 +5,15 @@ VisualStudioVersion = 17.14.35906.104 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuilderPatternDemo", "BuilderPatternDemo\BuilderPatternDemo.csproj", "{926E23E5-D1E0-430C-8AAA-67A874451413}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloSKWorld", "HelloSKWorld\HelloSKWorld.csproj", "{B83B5483-9B20-431B-9762-9EA23CD37945}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+		ReadMe.md = ReadMe.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +24,10 @@ Global
 		{926E23E5-D1E0-430C-8AAA-67A874451413}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{926E23E5-D1E0-430C-8AAA-67A874451413}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{926E23E5-D1E0-430C-8AAA-67A874451413}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B83B5483-9B20-431B-9762-9EA23CD37945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B83B5483-9B20-431B-9762-9EA23CD37945}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B83B5483-9B20-431B-9762-9EA23CD37945}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B83B5483-9B20-431B-9762-9EA23CD37945}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

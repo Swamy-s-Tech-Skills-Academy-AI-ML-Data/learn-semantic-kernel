@@ -14,7 +14,7 @@ public sealed class PizzaBuilder
     public PizzaBuilder SetSauce(string sauce)
     {
         _pizza.Sauce = sauce;
-        
+
         return this;
     }
 

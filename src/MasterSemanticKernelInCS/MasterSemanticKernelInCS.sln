@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ReadMe.md = ReadMe.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SKKernelDemo", "SKKernelDemo\SKKernelDemo.csproj", "{1A9B5348-71B4-4CFE-AD26-766C68FACF6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{B83B5483-9B20-431B-9762-9EA23CD37945}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B83B5483-9B20-431B-9762-9EA23CD37945}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B83B5483-9B20-431B-9762-9EA23CD37945}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A9B5348-71B4-4CFE-AD26-766C68FACF6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A9B5348-71B4-4CFE-AD26-766C68FACF6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A9B5348-71B4-4CFE-AD26-766C68FACF6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A9B5348-71B4-4CFE-AD26-766C68FACF6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

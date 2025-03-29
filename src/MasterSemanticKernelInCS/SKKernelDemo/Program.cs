@@ -8,6 +8,7 @@ using System.Text;
 #pragma warning disable SKEXP0010
 #pragma warning disable SKEXP0001
 #pragma warning disable S125
+#pragma warning disable CA1303
 
 var openAIKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
 var azureEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");

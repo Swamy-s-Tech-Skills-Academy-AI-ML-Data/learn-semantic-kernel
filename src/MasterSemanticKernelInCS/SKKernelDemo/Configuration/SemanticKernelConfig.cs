@@ -1,4 +1,6 @@
-﻿namespace SKKernelDemo.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+
+namespace SKKernelDemo.Configuration;
 
 internal sealed class SemanticKernelConfig
 {
@@ -12,21 +14,39 @@ internal sealed class SemanticKernelConfig
 
     public string AzureModel { get; private set; }
 
-    public SemanticKernelConfig()
+    public bool UseOsEnvForSensitive { get; private set; }
+
+    public SemanticKernelConfig(IConfiguration configuration, IEnvironmentProvider envProvider)
     {
-        OpenAIKey = GetEnvironmentVariable("OPENAI_API_KEY");
+        UseOsEnvForSensitive = !bool.TryParse(configuration["UseOsEnvForSensitive"], out bool result) || result;
 
-        AzureEndpoint = GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
+        // Load non-sensitive values from the configuration
+        var semanticKernelSection = configuration.GetSection("SemanticKernel");
 
-        AzureKey = GetEnvironmentVariable("AZURE_OPENAI_API_KEY");
+        OpenAIModel = semanticKernelSection["OpenAIModel"]
+                      ?? throw new InvalidOperationException("Missing OpenAIModel configuration.");
+        
+        AzureModel = semanticKernelSection["AzureModel"]
+                     ?? throw new InvalidOperationException("Missing AzureModel configuration.");
 
-        OpenAIModel = "gpt-4o-mini-2024-07-18";
+        if (UseOsEnvForSensitive)
+        {
+            OpenAIKey = envProvider.GetEnvironmentVariable("OPENAI_API_KEY");
+            
+            AzureEndpoint = envProvider.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
+            
+            AzureKey = envProvider.GetEnvironmentVariable("AZURE_OPENAI_API_KEY");
+        }
+        else
+        {
+            OpenAIKey = semanticKernelSection["OpenAIKey"]
+                        ?? throw new InvalidOperationException("Missing OpenAI API Key configuration.");
 
-        AzureModel = "gpt-4o-dname";
-    }
+            AzureEndpoint = semanticKernelSection["AzureEndpoint"]
+                            ?? throw new InvalidOperationException("Missing Azure OpenAI Endpoint configuration.");
 
-    private static string GetEnvironmentVariable(string key)
-    {
-        return Environment.GetEnvironmentVariable(key) ?? throw new InvalidOperationException($"Missing environment variable: {key}");
+            AzureKey = semanticKernelSection["AzureKey"]
+                       ?? throw new InvalidOperationException("Missing Azure OpenAI API Key configuration.");
+        }
     }
 }

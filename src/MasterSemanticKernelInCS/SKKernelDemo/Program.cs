@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
-using System.Net;
 using System.Text;
 
 #pragma warning disable SKEXP0010
@@ -22,7 +21,7 @@ IKernelBuilder? azureKernelBuilder = Kernel.CreateBuilder()
     .AddAzureOpenAIChatCompletion("gpt-4o-dname", $"{azureEndpoint}", $"{azureKey}");
 
 // Add enterprise components
-//azureKernelBuilder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(LogLevel.Trace));
+azureKernelBuilder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(LogLevel.Trace));
 
 // Build the kernel
 Kernel azureKernel = azureKernelBuilder.Build();

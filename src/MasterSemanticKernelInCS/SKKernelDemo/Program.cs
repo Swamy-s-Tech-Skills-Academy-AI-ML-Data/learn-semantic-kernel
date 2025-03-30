@@ -1,9 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using SKKernelDemo.Configuration;
-using SKKernelDemo.Kernels;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SKKernelDemo.Infrastructure;
 using SKKernelDemo.Services;
 
 #pragma warning disable SKEXP0010
@@ -12,54 +8,30 @@ using SKKernelDemo.Services;
 #pragma warning disable CA1303
 
 
-var host = Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    config.SetBasePath(AppContext.BaseDirectory)
-                          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                          .AddUserSecrets<Program>(optional: true, reloadOnChange: true);
-                })
-                .ConfigureServices((context, services) =>
-                {
-                    // Register configuration and environment provider.
-                    services.AddSingleton<IEnvironmentProvider, DefaultEnvironmentProvider>();
-                    services.AddSingleton<SemanticKernelConfig>(provider =>
-                    {
-                        var configuration = provider.GetRequiredService<IConfiguration>();
-                        var envProvider = provider.GetRequiredService<IEnvironmentProvider>();
-
-                        return new SemanticKernelConfig(configuration, envProvider);
-                    });
-
-                    // Register kernel wrappers.
-                    services.AddSingleton<OpenAIKernelWrapper>();
-                    services.AddSingleton<AzureKernelWrapper>();
-
-                    // Register individual prompt services.
-                    services.AddTransient<IOpenAIPromptService, OpenAIPromptService>();
-                    services.AddTransient<IAzurePromptService, AzurePromptService>();
-
-                    // Register logging.
-                    services.AddLogging(configure => configure.AddConsole());
-                })
-                .Build();
+var host = HostBuilderFactory.BuildHost(args);
 
 var openAiService = host.Services.GetRequiredService<IOpenAIPromptService>();
-string prompt = "Write a short poem about Semantic Kernel";
+string prompt = "What is an apple?";
 
+WriteLine($"Prompt: {prompt}");
 ForegroundColor = ConsoleColor.DarkCyan;
-WriteLine("OpenAI Response:");
+WriteLine("******************** OpenAI Response: ********************");
 string? openAiResponse = await openAiService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
 WriteLine(openAiResponse);
 
 var azureService = host.Services.GetRequiredService<IAzurePromptService>();
+
+ResetColor();
+WriteLine($"\n\nPrompt: {prompt}");
 ForegroundColor = ConsoleColor.DarkYellow;
-WriteLine("\nAzure Response:");
+WriteLine("\n******************** Azure Response: ********************");
 string? azureResponse = await azureService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
 WriteLine(azureResponse);
 
+ResetColor();
+WriteLine($"\n\nPrompt: {prompt}");
 ForegroundColor = ConsoleColor.Green;
-WriteLine("\nAzure Streaming Response:");
+WriteLine("\n******************** Azure Streaming Response: ********************");
 await foreach (var chunk in azureService.StreamPromptResponseAsync(prompt).ConfigureAwait(false))
 {
     Write(chunk);
@@ -68,64 +40,3 @@ await foreach (var chunk in azureService.StreamPromptResponseAsync(prompt).Confi
 ResetColor();
 WriteLine("\n\nPress any key to exit...");
 ReadKey();
-
-// Load configuration
-//var config = new SemanticKernelConfig();
-
-//Kernel openAIKernel = Kernel.CreateBuilder()
-//    .AddOpenAIChatCompletion(config.OpenAIModel, config.OpenAIKey)
-//    .Build();
-
-//IKernelBuilder azureKernelBuilder = Kernel.CreateBuilder()
-//    .AddAzureOpenAIChatCompletion(config.AzureModel, config.AzureEndpoint, config.AzureKey);
-
-//// Add logging
-//azureKernelBuilder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(LogLevel.Trace));
-
-//// Build the kernel
-//Kernel azureKernel = azureKernelBuilder.Build();
-
-//#region Chat Completion
-//var options = new OpenAIPromptExecutionSettings
-//{
-//    MaxTokens = 150,
-//    Temperature = 0.9
-//};
-
-//var prompt = "Write a short poem about Semantic Kernel";
-
-//// Open AI
-//var openAIResult = await openAIKernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
-//ForegroundColor = ConsoleColor.DarkCyan;
-//WriteLine(openAIResult);
-
-//// Azure Open AI
-//var azOpenAIResult = await azureKernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
-//ForegroundColor = ConsoleColor.DarkYellow;
-//WriteLine($"\n\n{azOpenAIResult}");
-//#endregion
-
-//#region Chat Completion Streaming
-
-//ForegroundColor = ConsoleColor.DarkMagenta;
-
-//var fullMessageBuilder = new StringBuilder();
-
-//await foreach (var chatUpdate in azureKernel.InvokePromptStreamingAsync<StreamingChatMessageContent>(prompt).ConfigureAwait(false))
-//{
-//    if (!string.IsNullOrEmpty(chatUpdate.Content))
-//    {
-//        fullMessageBuilder.Append(chatUpdate.Content);
-//        Write(chatUpdate.Content);
-//    }
-//}
-
-//ForegroundColor = ConsoleColor.Green;
-//string fullMessage = fullMessageBuilder.ToString();
-//WriteLine($"\n\n{fullMessage}");
-
-//#endregion
-
-//ResetColor();
-//WriteLine("\n\nPress any key to exit...");
-//ReadKey();

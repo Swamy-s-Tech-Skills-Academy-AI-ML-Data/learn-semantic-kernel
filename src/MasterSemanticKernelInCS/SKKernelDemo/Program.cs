@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using SKKernelDemo.Configuration;
 using System.Text;
 
 #pragma warning disable SKEXP0010
@@ -9,18 +10,17 @@ using System.Text;
 #pragma warning disable S125
 #pragma warning disable CA1303
 
-var openAIKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-var azureEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
-var azureKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY");
+// Load configuration
+var config = new SemanticKernelConfig();
 
 Kernel openAIKernel = Kernel.CreateBuilder()
-    .AddOpenAIChatCompletion("gpt-4o-mini-2024-07-18", $"{openAIKey}")
+    .AddOpenAIChatCompletion(config.OpenAIModel, config.OpenAIKey)
     .Build();
 
-IKernelBuilder? azureKernelBuilder = Kernel.CreateBuilder()
-    .AddAzureOpenAIChatCompletion("gpt-4o-dname", $"{azureEndpoint}", $"{azureKey}");
+IKernelBuilder azureKernelBuilder = Kernel.CreateBuilder()
+    .AddAzureOpenAIChatCompletion(config.AzureModel, config.AzureEndpoint, config.AzureKey);
 
-// Add enterprise components
+// Add logging
 azureKernelBuilder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(LogLevel.Trace));
 
 // Build the kernel
@@ -36,14 +36,14 @@ var options = new OpenAIPromptExecutionSettings
 var prompt = "Write a short poem about Semantic Kernel";
 
 // Open AI
-var result = await openAIKernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
+var openAIResult = await openAIKernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
 ForegroundColor = ConsoleColor.DarkCyan;
-WriteLine(result);
+WriteLine(openAIResult);
 
 // Azure Open AI
-var result1 = await azureKernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
+var azOpenAIResult = await azureKernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
 ForegroundColor = ConsoleColor.DarkYellow;
-WriteLine($"\n\n{result1}");
+WriteLine($"\n\n{azOpenAIResult}");
 #endregion
 
 #region Chat Completion Streaming

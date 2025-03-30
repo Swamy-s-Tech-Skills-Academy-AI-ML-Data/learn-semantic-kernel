@@ -25,16 +25,16 @@ internal sealed class SemanticKernelConfig
 
         OpenAIModel = semanticKernelSection["OpenAIModel"]
                       ?? throw new InvalidOperationException("Missing OpenAIModel configuration.");
-        
+
         AzureModel = semanticKernelSection["AzureModel"]
                      ?? throw new InvalidOperationException("Missing AzureModel configuration.");
 
         if (UseOsEnvForSensitive)
         {
             OpenAIKey = envProvider.GetEnvironmentVariable("OPENAI_API_KEY");
-            
+
             AzureEndpoint = envProvider.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
-            
+
             AzureKey = envProvider.GetEnvironmentVariable("AZURE_OPENAI_API_KEY");
         }
         else

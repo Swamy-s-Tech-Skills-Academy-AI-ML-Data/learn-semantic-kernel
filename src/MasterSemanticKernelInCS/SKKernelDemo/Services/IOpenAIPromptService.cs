@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace SKKernelDemo.Services;
+﻿namespace SKKernelDemo.Services;
 
 internal interface IOpenAIPromptService
 {

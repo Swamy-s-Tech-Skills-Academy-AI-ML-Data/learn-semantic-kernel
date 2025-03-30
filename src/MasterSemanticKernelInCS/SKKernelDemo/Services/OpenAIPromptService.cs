@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.SemanticKernel;
+﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using SKKernelDemo.Kernels;
 
@@ -18,7 +17,7 @@ namespace SKKernelDemo.Services
             };
 
             var result = await _kernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
-            
+
             return result?.GetValue<string>();
         }
     }

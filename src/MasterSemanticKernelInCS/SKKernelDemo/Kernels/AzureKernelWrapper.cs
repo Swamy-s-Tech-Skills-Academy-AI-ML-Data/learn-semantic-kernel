@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using SKKernelDemo.Configuration;
 
 namespace SKKernelDemo.Kernels;
+
+#pragma warning disable S125
 
 internal sealed class AzureKernelWrapper
 {
@@ -13,11 +14,11 @@ internal sealed class AzureKernelWrapper
     {
         var builder = Kernel.CreateBuilder()
             .AddAzureOpenAIChatCompletion(config.AzureModel, config.AzureEndpoint, config.AzureKey);
-        
-        builder.Services.AddLogging(logging =>
-        {
-            logging.AddConsole().SetMinimumLevel(LogLevel.Trace);
-        });
+
+        //builder.Services.AddLogging(logging =>
+        //{
+        //    logging.AddConsole().SetMinimumLevel(LogLevel.Trace);
+        //});
 
         Kernel = builder.Build();
     }

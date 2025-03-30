@@ -2,12 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
 using SKKernelDemo.Configuration;
 using SKKernelDemo.Kernels;
 using SKKernelDemo.Services;
-using System.Text;
 
 #pragma warning disable SKEXP0010
 #pragma warning disable SKEXP0001
@@ -19,7 +16,8 @@ var host = Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.SetBasePath(AppContext.BaseDirectory)
-                          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                          .AddUserSecrets<Program>(optional: true, reloadOnChange: true);
                 })
                 .ConfigureServices((context, services) =>
                 {
@@ -29,6 +27,7 @@ var host = Host.CreateDefaultBuilder(args)
                     {
                         var configuration = provider.GetRequiredService<IConfiguration>();
                         var envProvider = provider.GetRequiredService<IEnvironmentProvider>();
+
                         return new SemanticKernelConfig(configuration, envProvider);
                     });
 
@@ -50,25 +49,23 @@ string prompt = "Write a short poem about Semantic Kernel";
 
 ForegroundColor = ConsoleColor.DarkCyan;
 WriteLine("OpenAI Response:");
-ResetColor();
 string? openAiResponse = await openAiService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
 WriteLine(openAiResponse);
 
 var azureService = host.Services.GetRequiredService<IAzurePromptService>();
 ForegroundColor = ConsoleColor.DarkYellow;
 WriteLine("\nAzure Response:");
-ResetColor();
 string? azureResponse = await azureService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
 WriteLine(azureResponse);
 
-ForegroundColor = ConsoleColor.DarkMagenta;
+ForegroundColor = ConsoleColor.Green;
 WriteLine("\nAzure Streaming Response:");
-ResetColor();
 await foreach (var chunk in azureService.StreamPromptResponseAsync(prompt).ConfigureAwait(false))
 {
     Write(chunk);
 }
 
+ResetColor();
 WriteLine("\n\nPress any key to exit...");
 ReadKey();
 

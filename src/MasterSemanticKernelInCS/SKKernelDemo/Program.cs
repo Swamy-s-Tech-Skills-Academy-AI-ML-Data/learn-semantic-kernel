@@ -3,9 +3,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Net;
+using System.Text;
 
 #pragma warning disable SKEXP0010
 #pragma warning disable SKEXP0001
+#pragma warning disable S125
+#pragma warning disable CA1303
 
 var openAIKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
 var azureEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
@@ -19,7 +22,7 @@ IKernelBuilder? azureKernelBuilder = Kernel.CreateBuilder()
     .AddAzureOpenAIChatCompletion("gpt-4o-dname", $"{azureEndpoint}", $"{azureKey}");
 
 // Add enterprise components
-azureKernelBuilder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(LogLevel.Trace));
+//azureKernelBuilder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(LogLevel.Trace));
 
 // Build the kernel
 Kernel azureKernel = azureKernelBuilder.Build();
@@ -34,12 +37,37 @@ var options = new OpenAIPromptExecutionSettings
 var prompt = "Write a short poem about Semantic Kernel";
 
 // Open AI
-var result = openAIKernel.InvokePromptAsync(prompt, new KernelArguments(options));
+var result = await openAIKernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
 ForegroundColor = ConsoleColor.DarkCyan;
-WriteLine(result.Result);
+WriteLine(result);
 
 // Azure Open AI
-result = azureKernel.InvokePromptAsync(prompt, new KernelArguments(options));
+var result1 = await azureKernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
 ForegroundColor = ConsoleColor.DarkYellow;
-WriteLine($"\n\n{result.Result}");
+WriteLine($"\n\n{result1}");
 #endregion
+
+#region Chat Completion Streaming
+
+ForegroundColor = ConsoleColor.DarkMagenta;
+
+var fullMessageBuilder = new StringBuilder();
+
+await foreach (var chatUpdate in azureKernel.InvokePromptStreamingAsync<StreamingChatMessageContent>(prompt).ConfigureAwait(false))
+{
+    if (!string.IsNullOrEmpty(chatUpdate.Content))
+    {
+        fullMessageBuilder.Append(chatUpdate.Content);
+        Write(chatUpdate.Content);
+    }
+}
+
+ForegroundColor = ConsoleColor.Green;
+string fullMessage = fullMessageBuilder.ToString();
+WriteLine($"\n\n{fullMessage}");
+
+#endregion
+
+ResetColor();
+WriteLine("\n\nPress any key to exit...");
+ReadKey();

@@ -1,72 +1,41 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
-using System.Net;
-using System.Text;
+using SKKernelDemo.Infrastructure;
+using SKKernelDemo.Services;
 
 #pragma warning disable SKEXP0010
 #pragma warning disable SKEXP0001
 #pragma warning disable S125
 #pragma warning disable CA1303
 
-var openAIKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-var azureEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
-var azureKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY");
 
-Kernel openAIKernel = Kernel.CreateBuilder()
-    .AddOpenAIChatCompletion("gpt-4o-mini-2024-07-18", $"{openAIKey}")
-    .Build();
+var host = HostBuilderFactory.BuildHost(args);
 
-IKernelBuilder? azureKernelBuilder = Kernel.CreateBuilder()
-    .AddAzureOpenAIChatCompletion("gpt-4o-dname", $"{azureEndpoint}", $"{azureKey}");
+var openAiService = host.Services.GetRequiredService<IOpenAIPromptService>();
+string prompt = "What is an apple?";
 
-// Add enterprise components
-//azureKernelBuilder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(LogLevel.Trace));
-
-// Build the kernel
-Kernel azureKernel = azureKernelBuilder.Build();
-
-#region Chat Completion
-var options = new OpenAIPromptExecutionSettings
-{
-    MaxTokens = 150,
-    Temperature = 0.9
-};
-
-var prompt = "Write a short poem about Semantic Kernel";
-
-// Open AI
-var result = await openAIKernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
+WriteLine($"Prompt: {prompt}");
 ForegroundColor = ConsoleColor.DarkCyan;
-WriteLine(result);
+WriteLine("******************** OpenAI Response: ********************");
+string? openAiResponse = await openAiService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
+WriteLine(openAiResponse);
 
-// Azure Open AI
-var result1 = await azureKernel.InvokePromptAsync(prompt, new KernelArguments(options)).ConfigureAwait(false);
+var azureService = host.Services.GetRequiredService<IAzurePromptService>();
+
+ResetColor();
+WriteLine($"\n\nPrompt: {prompt}");
 ForegroundColor = ConsoleColor.DarkYellow;
-WriteLine($"\n\n{result1}");
-#endregion
+WriteLine("\n******************** Azure Response: ********************");
+string? azureResponse = await azureService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
+WriteLine(azureResponse);
 
-#region Chat Completion Streaming
-
-ForegroundColor = ConsoleColor.DarkMagenta;
-
-var fullMessageBuilder = new StringBuilder();
-
-await foreach (var chatUpdate in azureKernel.InvokePromptStreamingAsync<StreamingChatMessageContent>(prompt).ConfigureAwait(false))
-{
-    if (!string.IsNullOrEmpty(chatUpdate.Content))
-    {
-        fullMessageBuilder.Append(chatUpdate.Content);
-        Write(chatUpdate.Content);
-    }
-}
-
+ResetColor();
+WriteLine($"\n\nPrompt: {prompt}");
 ForegroundColor = ConsoleColor.Green;
-string fullMessage = fullMessageBuilder.ToString();
-WriteLine($"\n\n{fullMessage}");
-
-#endregion
+WriteLine("\n******************** Azure Streaming Response: ********************");
+await foreach (var chunk in azureService.StreamPromptResponseAsync(prompt).ConfigureAwait(false))
+{
+    Write(chunk);
+}
 
 ResetColor();
 WriteLine("\n\nPress any key to exit...");

@@ -15,9 +15,18 @@ string prompt = "What is an apple?";
 
 WriteLine($"Prompt: {prompt}");
 ForegroundColor = ConsoleColor.DarkCyan;
-WriteLine("******************** OpenAI Response: ********************");
+WriteLine("\n******************** OpenAI Response: ********************");
 string? openAiResponse = await openAiService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
 WriteLine(openAiResponse);
+
+ResetColor();
+WriteLine($"\n\nPrompt: {prompt}");
+ForegroundColor = ConsoleColor.Magenta;
+WriteLine("\n******************** OpenAI Streaming Response: ********************");
+await foreach (var chunk in openAiService.StreamPromptResponseAsync(prompt).ConfigureAwait(false))
+{
+    Write(chunk);
+}
 
 var azureService = host.Services.GetRequiredService<IAzurePromptService>();
 

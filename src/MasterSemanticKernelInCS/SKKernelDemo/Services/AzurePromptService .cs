@@ -4,7 +4,7 @@ using SKKernelDemo.Kernels;
 
 namespace SKKernelDemo.Services;
 
-internal sealed class AzurePromptService(AzureKernelWrapper kernelWrapper) : IAzurePromptService
+internal sealed class AzurePromptService(AzureOpenAIKernelWrapper kernelWrapper) : IAzurePromptService
 {
     private readonly Kernel _kernel = kernelWrapper.Kernel;
 

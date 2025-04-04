@@ -8,13 +8,13 @@ namespace SKKernelDemo.Kernels;
 #pragma warning disable CA1848
 #pragma warning disable SKEXP0010
 
-internal sealed class AzureKernelWrapper
+internal sealed class AzureOpenAIKernelWrapper
 {
     public Kernel Kernel { get; }
 
-    public AzureKernelWrapper(SemanticKernelConfig config, ILogger<AzureKernelWrapper> logger)
+    public AzureOpenAIKernelWrapper(SemanticKernelConfig config, ILogger<AzureOpenAIKernelWrapper> logger)
     {
-        logger.BeginScope("AzureKernelWrapper");
+        logger.BeginScope(nameof(AzureOpenAIKernelWrapper));
 
         var builder = Kernel.CreateBuilder()
             .AddAzureOpenAIChatCompletion(config.AzureModel, config.AzureEndpoint, config.AzureKey)
@@ -27,6 +27,6 @@ internal sealed class AzureKernelWrapper
 
         Kernel = builder.Build();
 
-        logger.LogInformation("Azure Kernel initialized with model: {Model}", config.AzureModel);
+        logger.LogInformation("Azure OpenAI Kernel initialized with model: {Model}", config.AzureModel);
     }
 }

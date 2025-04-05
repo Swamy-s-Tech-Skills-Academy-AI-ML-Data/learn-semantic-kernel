@@ -1,30 +1,23 @@
 ﻿using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.ChatCompletion;
 using SKKernelDemoV1.Kernels;
 
 namespace SKKernelDemoV1.Services;
 
 internal sealed class AzurePromptService(AzureOpenAIKernelWrapper kernelWrapper) : IAzurePromptService
 {
-    private readonly Kernel _kernel = kernelWrapper.Kernel;
-
-    private static OpenAIPromptExecutionSettings GetDefaultExecutionSettings() =>
-            new()
-            {
-                MaxTokens = 150,
-                Temperature = 0.9
-            };
+    private readonly IChatCompletionService _chatCompletionService = kernelWrapper.Kernel.GetRequiredService<IChatCompletionService>();
 
     public async Task<string?> GetPromptResponseAsync(string prompt)
     {
-        var result = await _kernel.InvokePromptAsync(prompt, new KernelArguments(GetDefaultExecutionSettings())).ConfigureAwait(false);
+        ChatMessageContent result = await _chatCompletionService.GetChatMessageContentAsync(prompt).ConfigureAwait(false);
 
-        return result?.GetValue<string>();
+        return result?.Content;
     }
 
     public async IAsyncEnumerable<string?> StreamPromptResponseAsync(string prompt)
     {
-        await foreach (var chatUpdate in _kernel.InvokePromptStreamingAsync<StreamingChatMessageContent>(prompt, new KernelArguments(GetDefaultExecutionSettings())).ConfigureAwait(false))
+        await foreach (StreamingChatMessageContent chatUpdate in _chatCompletionService.GetStreamingChatMessageContentsAsync(prompt).ConfigureAwait(false))
         {
             if (!string.IsNullOrEmpty(chatUpdate.Content))
             {

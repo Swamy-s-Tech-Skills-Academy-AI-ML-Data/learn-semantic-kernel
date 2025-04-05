@@ -14,9 +14,10 @@ var host = HostBuilderFactory.BuildHost(args);
 
 var openAiService = host.Services.GetRequiredService<IOpenAIPromptService>();
 
-// Ask user for input
+ForegroundColor = ConsoleColor.Cyan;
 Write("Enter your prompt: ");
 string? prompt = ReadLine();
+ResetColor();
 
 if (string.IsNullOrWhiteSpace(prompt))
 {

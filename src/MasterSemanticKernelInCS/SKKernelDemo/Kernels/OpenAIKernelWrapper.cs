@@ -9,6 +9,5 @@ internal sealed class OpenAIKernelWrapper(SemanticKernelConfig config)
 {
     public Kernel Kernel { get; } = Kernel.CreateBuilder()
             .AddOpenAIChatCompletion(config.OpenAIModel, config.OpenAIKey)
-            .AddOpenAITextToImage(config.OpenAIKey)
             .Build();
 }

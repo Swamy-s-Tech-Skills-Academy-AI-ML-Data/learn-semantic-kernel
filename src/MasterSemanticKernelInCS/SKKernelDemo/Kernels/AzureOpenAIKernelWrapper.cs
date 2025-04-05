@@ -17,8 +17,7 @@ internal sealed class AzureOpenAIKernelWrapper
         logger.BeginScope(nameof(AzureOpenAIKernelWrapper));
 
         var builder = Kernel.CreateBuilder()
-            .AddAzureOpenAIChatCompletion(config.AzureModel, config.AzureEndpoint, config.AzureKey)
-            .AddAzureOpenAITextToImage("dall-e-3", config.AzureEndpoint, config.AzureKey);
+            .AddAzureOpenAIChatCompletion(config.AzureModel, config.AzureEndpoint, config.AzureKey);
 
         //builder.Services.AddLogging(logging =>
         //{

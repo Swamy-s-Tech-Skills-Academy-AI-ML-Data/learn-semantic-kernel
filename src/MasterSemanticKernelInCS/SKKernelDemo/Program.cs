@@ -26,7 +26,7 @@ if (string.IsNullOrWhiteSpace(prompt))
 
 WriteLine($"\nPrompt: {prompt}");
 
-WriteLine("\n******************** OpenAI Response: ********************");
+WriteLine("\n******************** OpenAI Response ********************");
 ForegroundColor = ConsoleColor.DarkCyan;
 string? openAiResponse = await openAiService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
 WriteLine(openAiResponse);
@@ -34,34 +34,34 @@ ResetColor();
 WriteLine("\n-------------------- OpenAI Response --------------------");
 
 WriteLine($"\n\nPrompt: {prompt}");
-WriteLine("\n******************** OpenAI Streaming Response: ********************");
+WriteLine("\n******************** OpenAI Streaming Response ********************");
 ForegroundColor = ConsoleColor.Magenta;
 await foreach (var chunk in openAiService.StreamPromptResponseAsync(prompt).ConfigureAwait(false))
 {
     Write(chunk);
 }
 ResetColor();
-WriteLine("\n-------------------- OpenAI Response --------------------");
+WriteLine("\n-------------------- OpenAI Streaming Response --------------------");
 
 var azureService = host.Services.GetRequiredService<IAzurePromptService>();
 
 WriteLine($"\n\nPrompt: {prompt}");
-WriteLine("\n******************** Azure Response: ********************");
+WriteLine("\n******************** Azure OpenAI Response ********************");
 ForegroundColor = ConsoleColor.DarkYellow;
 string? azureResponse = await azureService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
 WriteLine(azureResponse);
 ResetColor();
-WriteLine("\n-------------------- OpenAI Response --------------------");
+WriteLine("\n-------------------- Azure OpenAI Response --------------------");
 
 WriteLine($"\n\nPrompt: {prompt}");
-WriteLine("\n******************** Azure Streaming Response: ********************");
+WriteLine("\n******************** Azure Streaming Response ********************");
 ForegroundColor = ConsoleColor.Green;
 await foreach (var chunk in azureService.StreamPromptResponseAsync(prompt).ConfigureAwait(false))
 {
     Write(chunk);
 }
 ResetColor();
-WriteLine("\n-------------------- OpenAI Response --------------------");
+WriteLine("\n-------------------- Azure Streaming Response --------------------");
 
 ResetColor();
 WriteLine("\n\nPress any key to exit...");

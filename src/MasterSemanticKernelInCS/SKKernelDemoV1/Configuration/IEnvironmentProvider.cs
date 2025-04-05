@@ -1,4 +1,4 @@
-﻿namespace SKKernelDemo.Configuration;
+﻿namespace SKKernelDemoV1.Configuration;
 
 internal interface IEnvironmentProvider
 {

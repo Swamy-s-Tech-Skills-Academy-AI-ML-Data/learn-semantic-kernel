@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
-using SKKernelDemo.Configuration;
+using SKKernelDemoV1.Configuration;
 
-namespace SKKernelDemo.Kernels;
+namespace SKKernelDemoV1.Kernels;
 
 #pragma warning disable S125
 #pragma warning disable CA1848

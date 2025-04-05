@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace SKKernelDemo.Configuration;
+namespace SKKernelDemoV1.Configuration;
 
 internal sealed class SemanticKernelConfig
 {

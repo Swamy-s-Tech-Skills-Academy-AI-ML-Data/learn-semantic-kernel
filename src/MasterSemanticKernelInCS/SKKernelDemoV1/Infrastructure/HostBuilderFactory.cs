@@ -3,10 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SKKernelDemo.Configuration;
-using SKKernelDemo.Kernels;
-using SKKernelDemo.Services;
+using SKKernelDemoV1.Configuration;
+using SKKernelDemoV1.Kernels;
+using SKKernelDemoV1.Services;
 
-namespace SKKernelDemo.Infrastructure;
+namespace SKKernelDemoV1.Infrastructure;
 
 internal static class HostBuilderFactory
 {
@@ -24,7 +25,7 @@ internal static class HostBuilderFactory
                 // Register configuration and environment provider.
                 services.AddSingleton<IEnvironmentProvider, DefaultEnvironmentProvider>();
 
-                services.AddSingleton<SemanticKernelConfig>(provider =>
+                services.AddSingleton(provider =>
                 {
                     var configuration = provider.GetRequiredService<IConfiguration>();
                     var envProvider = provider.GetRequiredService<IEnvironmentProvider>();

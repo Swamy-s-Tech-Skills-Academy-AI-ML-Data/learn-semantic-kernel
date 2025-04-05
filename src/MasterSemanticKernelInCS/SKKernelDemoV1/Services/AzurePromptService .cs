@@ -1,8 +1,8 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
-using SKKernelDemo.Kernels;
+using SKKernelDemoV1.Kernels;
 
-namespace SKKernelDemo.Services;
+namespace SKKernelDemoV1.Services;
 
 internal sealed class AzurePromptService(AzureOpenAIKernelWrapper kernelWrapper) : IAzurePromptService
 {

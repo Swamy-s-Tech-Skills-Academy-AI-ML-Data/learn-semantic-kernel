@@ -1,4 +1,4 @@
-﻿namespace SKKernelDemo.Services;
+﻿namespace SKKernelDemoV1.Services;
 
 internal interface IOpenAIPromptService
 {

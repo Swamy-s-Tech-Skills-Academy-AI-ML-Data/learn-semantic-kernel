@@ -1,7 +1,7 @@
 ﻿using Microsoft.SemanticKernel;
-using SKKernelDemo.Configuration;
+using SKKernelDemoV1.Configuration;
 
-namespace SKKernelDemo.Kernels;
+namespace SKKernelDemoV1.Kernels;
 
 #pragma warning disable SKEXP0010
 

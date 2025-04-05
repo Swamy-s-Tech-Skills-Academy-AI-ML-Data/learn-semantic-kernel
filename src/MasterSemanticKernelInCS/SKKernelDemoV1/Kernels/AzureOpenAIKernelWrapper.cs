@@ -19,11 +19,6 @@ internal sealed class AzureOpenAIKernelWrapper
         var builder = Kernel.CreateBuilder()
             .AddAzureOpenAIChatCompletion(config.AzureModel, config.AzureEndpoint, config.AzureKey);
 
-        //builder.Services.AddLogging(logging =>
-        //{
-        //    logging.AddConsole().SetMinimumLevel(LogLevel.Trace);
-        //});
-
         Kernel = builder.Build();
 
         logger.LogInformation("Azure OpenAI Kernel initialized with model: {Model}", config.AzureModel);

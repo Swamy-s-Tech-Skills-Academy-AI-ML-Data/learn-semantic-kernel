@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SKKernelDemo.Configuration;
 using SKKernelDemoV1.Configuration;
 using SKKernelDemoV1.Kernels;
 using SKKernelDemoV1.Services;

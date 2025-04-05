@@ -37,6 +37,8 @@ internal static class HostBuilderFactory
 
                 services.AddSingleton<AzureOpenAIKernelWrapper>();
 
+                services.AddSingleton<HuggingFaceKernelWrapper>();
+
                 // Register individual prompt services.
                 services.AddTransient<IOpenAIPromptService, OpenAIPromptService>();
 

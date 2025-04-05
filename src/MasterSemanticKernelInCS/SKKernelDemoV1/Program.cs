@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.SemanticKernel.ChatCompletion;
 using SKKernelDemoV1.Infrastructure;
+using SKKernelDemoV1.Kernels;
 using SKKernelDemoV1.Services;
 using System.Text;
 
@@ -11,6 +13,11 @@ using System.Text;
 Console.OutputEncoding = Encoding.UTF8;
 
 var host = HostBuilderFactory.BuildHost(args);
+
+var hfKernel = host.Services.GetRequiredService<HuggingFaceKernelWrapper>();
+var hfChat = hfKernel.Kernel.GetRequiredService<IChatCompletionService>();
+var result = await hfChat.GetChatMessageContentAsync("Hi").ConfigureAwait(false);
+WriteLine(result.Content);
 
 var openAiService = host.Services.GetRequiredService<IOpenAIPromptService>();
 

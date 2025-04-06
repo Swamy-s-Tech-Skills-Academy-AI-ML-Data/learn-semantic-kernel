@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
+		<UserSecretsId>8df9d736-MasterSemanticKernelInCS</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -1,14 +1,15 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.HuggingFace;
+using SKKernelDemoV1.Kernels;
 
 #pragma warning disable SKEXP0070
 
 namespace SKKernelDemoV1.Services;
 
-internal sealed class HuggingFacePromptService(IChatCompletionService chatCompletionService) : IHuggingFacePromptService
+internal sealed class HuggingFacePromptService(HuggingFaceKernelWrapper huggingFaceKernelWrapper) : IHuggingFacePromptService
 {
-    private readonly IChatCompletionService _chatCompletionService = chatCompletionService ?? throw new ArgumentNullException(nameof(chatCompletionService));
+    private readonly IChatCompletionService _chatCompletionService = huggingFaceKernelWrapper.Kernel.GetRequiredService<IChatCompletionService>() ?? throw new ArgumentNullException("huggingFaceKernelWrapper.Kernel.GetRequiredService<IChatCompletionService>()");
 
     private static HuggingFacePromptExecutionSettings GetDefaultExecutionSettings() =>
             new()

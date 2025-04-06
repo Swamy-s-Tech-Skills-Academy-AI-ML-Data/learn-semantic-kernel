@@ -1,14 +1,15 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
+using SKKernelDemoV1.Kernels;
 
 namespace SKKernelDemoV1.Services;
 
-internal sealed class AzurePromptService(IChatCompletionService chatCompletionService) : IAzurePromptService
+internal sealed class AzurePromptService(AzureOpenAIKernelWrapper azureOpenAIKernelWrapper) : IAzurePromptService
 {
-    private readonly IChatCompletionService _chatCompletionService = chatCompletionService ?? throw new ArgumentNullException(nameof(chatCompletionService));
+    private readonly IChatCompletionService _chatCompletionService = azureOpenAIKernelWrapper.Kernel.GetRequiredService<IChatCompletionService>() ?? throw new ArgumentNullException("azureOpenAIKernelWrapper.Kernel.GetRequiredService<IChatCompletionService>()");
 
-    private static OpenAIPromptExecutionSettings GetDefaultExecutionSettings() =>
+    private static AzureOpenAIPromptExecutionSettings GetDefaultExecutionSettings() =>
             new()
             {
                 MaxTokens = 150,

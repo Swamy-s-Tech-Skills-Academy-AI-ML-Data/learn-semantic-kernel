@@ -44,6 +44,8 @@ internal static class HostBuilderFactory
 
                 services.AddTransient<IAzurePromptService, AzurePromptService>();
 
+                services.AddTransient<IHuggingFacePromptService, HuggingFacePromptService>();
+
                 // Register logging.
                 services.AddLogging(configure => configure.AddConsole());
             })

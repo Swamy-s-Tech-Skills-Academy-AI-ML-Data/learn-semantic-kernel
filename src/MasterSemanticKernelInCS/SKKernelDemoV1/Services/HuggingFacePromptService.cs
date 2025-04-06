@@ -4,7 +4,7 @@ using SKKernelDemoV1.Kernels;
 
 namespace SKKernelDemoV1.Services
 {
-    internal sealed class HuggingFacePromptService(HuggingFaceKernelWrapper kernelWrapper) : IOpenAIPromptService
+    internal sealed class HuggingFacePromptService(HuggingFaceKernelWrapper kernelWrapper) : IHuggingFacePromptService
     {
         private readonly IChatCompletionService _chatCompletionService = kernelWrapper.Kernel.GetRequiredService<IChatCompletionService>();
 

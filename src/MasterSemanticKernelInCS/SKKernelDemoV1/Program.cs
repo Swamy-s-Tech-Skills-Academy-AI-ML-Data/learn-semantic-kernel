@@ -1,9 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
 using SKKernelDemoV1.Infrastructure;
-using SKKernelDemoV1.Kernels;
 using SKKernelDemoV1.Services;
 using System.Text;
 
@@ -15,19 +11,6 @@ using System.Text;
 Console.OutputEncoding = Encoding.UTF8;
 
 var host = HostBuilderFactory.BuildHost(args);
-
-Console.WriteLine("\n======== HuggingFace Llama 2 example ========\n");
-
-var hfKernel = host.Services.GetRequiredService<HuggingFaceKernelWrapper>();
-var hfChat = hfKernel.Kernel.GetRequiredService<IChatCompletionService>();
-
-ChatHistory history = [];
-history.AddSystemMessage("You are a helpful assistant.");
-history.AddUserMessage("Hello, how are you?");
-
-var result = await hfChat.GetChatMessageContentAsync(history)
-    .ConfigureAwait(false);
-WriteLine(result.Content);
 
 var openAiService = host.Services.GetRequiredService<IOpenAIPromptService>();
 
@@ -51,7 +34,6 @@ WriteLine(openAiResponse);
 ResetColor();
 WriteLine("\n-------------------- OpenAI Response --------------------");
 
-WriteLine($"\n\nPrompt: {prompt}");
 WriteLine("\n******************** OpenAI Streaming Response ********************");
 ForegroundColor = ConsoleColor.Magenta;
 await foreach (var chunk in openAiService.StreamPromptResponseAsync(prompt).ConfigureAwait(false))
@@ -63,7 +45,6 @@ WriteLine("\n-------------------- OpenAI Streaming Response --------------------
 
 var azureService = host.Services.GetRequiredService<IAzurePromptService>();
 
-WriteLine($"\n\nPrompt: {prompt}");
 WriteLine("\n******************** Azure OpenAI Response ********************");
 ForegroundColor = ConsoleColor.DarkYellow;
 string? azureResponse = await azureService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
@@ -71,7 +52,6 @@ WriteLine(azureResponse);
 ResetColor();
 WriteLine("\n-------------------- Azure OpenAI Response --------------------");
 
-WriteLine($"\n\nPrompt: {prompt}");
 WriteLine("\n******************** Azure Streaming Response ********************");
 ForegroundColor = ConsoleColor.Green;
 await foreach (var chunk in azureService.StreamPromptResponseAsync(prompt).ConfigureAwait(false))
@@ -80,6 +60,23 @@ await foreach (var chunk in azureService.StreamPromptResponseAsync(prompt).Confi
 }
 ResetColor();
 WriteLine("\n-------------------- Azure Streaming Response --------------------");
+
+WriteLine("\n******************** Hugging Face Response ********************");
+ForegroundColor = ConsoleColor.Yellow;
+var huggingFaceService = host.Services.GetRequiredService<IHuggingFacePromptService>();
+string? huggingFaceResponse = await huggingFaceService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
+WriteLine(huggingFaceResponse);
+ResetColor();
+WriteLine("\n-------------------- Hugging Face Response --------------------");
+
+WriteLine("\n******************** Hugging Face Streaming Response ********************");
+ForegroundColor = ConsoleColor.Blue;
+await foreach (var chunk in huggingFaceService.StreamPromptResponseAsync(prompt).ConfigureAwait(false))
+{
+    Write(chunk);
+}
+ResetColor();
+WriteLine("\n-------------------- Hugging Face Streaming Response --------------------");
 
 ResetColor();
 WriteLine("\n\nPress any key to exit...");

@@ -1,6 +1,8 @@
 # Mastering Semantic Kernel
 
+## Hugging Face
 
+> 1. <https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1>
 
 // Load configuration
 //var config = new SemanticKernelConfig();

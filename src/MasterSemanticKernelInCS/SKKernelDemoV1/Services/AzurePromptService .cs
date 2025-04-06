@@ -15,6 +15,13 @@ internal sealed class AzurePromptService(AzureOpenAIKernelWrapper kernelWrapper)
         return result?.Content;
     }
 
+    public async Task<string?> GetPromptResponseAsync(ChatHistory chatMessages)
+    {
+        ChatMessageContent result = await _chatCompletionService.GetChatMessageContentAsync(chatMessages).ConfigureAwait(false);
+
+        return result?.Content;
+    }
+
     public async IAsyncEnumerable<string?> StreamPromptResponseAsync(string prompt)
     {
         await foreach (StreamingChatMessageContent chatUpdate in _chatCompletionService.GetStreamingChatMessageContentsAsync(prompt).ConfigureAwait(false))

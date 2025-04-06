@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.SemanticKernel.ChatCompletion;
 using SKKernelDemoV1.Infrastructure;
 using SKKernelDemoV1.Services;
 using System.Text;
@@ -28,10 +27,6 @@ if (string.IsNullOrWhiteSpace(prompt))
 
 WriteLine($"\nPrompt: {prompt}");
 
-ChatHistory chatMessages = [];
-chatMessages.AddSystemMessage("You are a helpful assistant.");
-chatMessages.AddUserMessage(prompt);
-
 WriteLine("\n******************** OpenAI Response ********************");
 ForegroundColor = ConsoleColor.DarkCyan;
 string? openAiResponse = await openAiService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
@@ -56,13 +51,6 @@ string? azureResponse = await azureService.GetPromptResponseAsync(prompt).Config
 WriteLine(azureResponse);
 ResetColor();
 WriteLine("\n-------------------- Azure OpenAI Response --------------------");
-
-WriteLine("\n******************** Azure OpenAI Response - Chat Messages ********************");
-ForegroundColor = ConsoleColor.DarkYellow;
-azureResponse = await azureService.GetPromptResponseAsync(chatMessages).ConfigureAwait(false);
-WriteLine(azureResponse);
-ResetColor();
-WriteLine("\n-------------------- Azure OpenAI Response - Chat Messages --------------------");
 
 WriteLine("\n******************** Azure Streaming Response ********************");
 ForegroundColor = ConsoleColor.Green;

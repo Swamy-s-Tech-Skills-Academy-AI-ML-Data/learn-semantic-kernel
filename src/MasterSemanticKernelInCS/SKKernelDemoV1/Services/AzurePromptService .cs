@@ -1,30 +1,49 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using SKKernelDemoV1.Kernels;
 
 namespace SKKernelDemoV1.Services;
 
-internal sealed class AzurePromptService(AzureOpenAIKernelWrapper kernelWrapper) : IAzurePromptService
+internal sealed class AzurePromptService : IAzurePromptService
 {
-    private readonly IChatCompletionService _chatCompletionService = kernelWrapper.Kernel.GetRequiredService<IChatCompletionService>();
+    private readonly IChatCompletionService _chatCompletionService;
+
+    private readonly ChatHistory chatMessages = [];
+
+    private static OpenAIPromptExecutionSettings GetDefaultExecutionSettings() =>
+            new()
+            {
+                MaxTokens = 150,
+                Temperature = 0.9
+            };
+
+    public AzurePromptService(AzureOpenAIKernelWrapper kernelWrapper)
+    {
+        _chatCompletionService = kernelWrapper.Kernel.GetRequiredService<IChatCompletionService>();
+
+        chatMessages.AddSystemMessage("You are a helpful assistant.");
+    }
+
 
     public async Task<string?> GetPromptResponseAsync(string prompt)
     {
-        ChatMessageContent result = await _chatCompletionService.GetChatMessageContentAsync(prompt).ConfigureAwait(false);
+        chatMessages.AddUserMessage(prompt);
 
-        return result?.Content;
-    }
-
-    public async Task<string?> GetPromptResponseAsync(ChatHistory chatMessages)
-    {
-        ChatMessageContent result = await _chatCompletionService.GetChatMessageContentAsync(chatMessages).ConfigureAwait(false);
+        ChatMessageContent result = await _chatCompletionService
+                .GetChatMessageContentAsync(chatMessages, GetDefaultExecutionSettings())
+                .ConfigureAwait(false);
 
         return result?.Content;
     }
 
     public async IAsyncEnumerable<string?> StreamPromptResponseAsync(string prompt)
     {
-        await foreach (StreamingChatMessageContent chatUpdate in _chatCompletionService.GetStreamingChatMessageContentsAsync(prompt).ConfigureAwait(false))
+        chatMessages.AddUserMessage(prompt);
+
+        await foreach (StreamingChatMessageContent chatUpdate in
+            _chatCompletionService.GetStreamingChatMessageContentsAsync(chatMessages, GetDefaultExecutionSettings())
+            .ConfigureAwait(false))
         {
             if (!string.IsNullOrEmpty(chatUpdate.Content))
             {

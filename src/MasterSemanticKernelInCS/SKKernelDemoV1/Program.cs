@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
 using SKKernelDemoV1.Infrastructure;
 using SKKernelDemoV1.Kernels;
 using SKKernelDemoV1.Services;

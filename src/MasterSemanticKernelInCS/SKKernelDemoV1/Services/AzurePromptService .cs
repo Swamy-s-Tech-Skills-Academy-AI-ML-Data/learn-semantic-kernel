@@ -1,13 +1,12 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
-using SKKernelDemoV1.Kernels;
 
 namespace SKKernelDemoV1.Services;
 
-internal sealed class AzurePromptService : IAzurePromptService
+internal sealed class AzurePromptService(IChatCompletionService chatCompletionService) : IAzurePromptService
 {
-    private readonly IChatCompletionService _chatCompletionService;
+    private readonly IChatCompletionService _chatCompletionService = chatCompletionService ?? throw new ArgumentNullException(nameof(chatCompletionService));
 
     private static OpenAIPromptExecutionSettings GetDefaultExecutionSettings() =>
             new()
@@ -15,12 +14,6 @@ internal sealed class AzurePromptService : IAzurePromptService
                 MaxTokens = 150,
                 Temperature = 0.9
             };
-
-    public AzurePromptService(AzureOpenAIKernelWrapper kernelWrapper)
-    {
-        _chatCompletionService = kernelWrapper.Kernel.GetRequiredService<IChatCompletionService>();
-    }
-
 
     public async Task<string?> GetPromptResponseAsync(string prompt)
     {

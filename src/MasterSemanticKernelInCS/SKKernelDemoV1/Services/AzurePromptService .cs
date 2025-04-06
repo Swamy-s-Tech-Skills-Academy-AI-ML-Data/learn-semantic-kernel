@@ -9,8 +9,6 @@ internal sealed class AzurePromptService : IAzurePromptService
 {
     private readonly IChatCompletionService _chatCompletionService;
 
-    private readonly ChatHistory chatMessages = [];
-
     private static OpenAIPromptExecutionSettings GetDefaultExecutionSettings() =>
             new()
             {
@@ -21,14 +19,12 @@ internal sealed class AzurePromptService : IAzurePromptService
     public AzurePromptService(AzureOpenAIKernelWrapper kernelWrapper)
     {
         _chatCompletionService = kernelWrapper.Kernel.GetRequiredService<IChatCompletionService>();
-
-        chatMessages.AddSystemMessage("You are a helpful assistant.");
     }
 
 
     public async Task<string?> GetPromptResponseAsync(string prompt)
     {
-        chatMessages.AddUserMessage(prompt);
+        ChatHistory chatMessages = GetChatMessages(prompt);
 
         ChatMessageContent result = await _chatCompletionService
                 .GetChatMessageContentAsync(chatMessages, GetDefaultExecutionSettings())
@@ -39,7 +35,7 @@ internal sealed class AzurePromptService : IAzurePromptService
 
     public async IAsyncEnumerable<string?> StreamPromptResponseAsync(string prompt)
     {
-        chatMessages.AddUserMessage(prompt);
+        ChatHistory chatMessages = GetChatMessages(prompt);
 
         await foreach (StreamingChatMessageContent chatUpdate in
             _chatCompletionService.GetStreamingChatMessageContentsAsync(chatMessages, GetDefaultExecutionSettings())
@@ -50,5 +46,15 @@ internal sealed class AzurePromptService : IAzurePromptService
                 yield return chatUpdate.Content;
             }
         }
+    }
+
+    private static ChatHistory GetChatMessages(string prompt)
+    {
+        var chatMessages = new ChatHistory();
+
+        chatMessages.AddSystemMessage("You are a helpful assistant.");
+        chatMessages.AddUserMessage(prompt);
+
+        return chatMessages;
     }
 }

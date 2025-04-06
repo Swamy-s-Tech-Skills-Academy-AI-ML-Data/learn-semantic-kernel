@@ -14,8 +14,12 @@ var host = HostBuilderFactory.BuildHost(args);
 
 var openAiService = host.Services.GetRequiredService<IOpenAIPromptService>();
 
+WriteLine("============================= Semantic Kernel Demo =============================");
+WriteLine("This demo showcases the OpenAI, Azure OpenAI, and Hugging Face prompt services.");
+WriteLine("----------------------------- Semantic Kernel Demo -----------------------------");
+
 ForegroundColor = ConsoleColor.Cyan;
-Write("Enter your prompt: ");
+Write("\nEnter your prompt: ");
 string? prompt = ReadLine();
 ResetColor();
 
@@ -32,7 +36,6 @@ ForegroundColor = ConsoleColor.DarkCyan;
 string? openAiResponse = await openAiService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
 WriteLine(openAiResponse);
 ResetColor();
-WriteLine("\n-------------------- OpenAI Response --------------------");
 
 WriteLine("\n******************** OpenAI Streaming Response ********************");
 ForegroundColor = ConsoleColor.Magenta;
@@ -41,7 +44,6 @@ await foreach (var chunk in openAiService.StreamPromptResponseAsync(prompt).Conf
     Write(chunk);
 }
 ResetColor();
-WriteLine("\n-------------------- OpenAI Streaming Response --------------------");
 
 var azureService = host.Services.GetRequiredService<IAzurePromptService>();
 
@@ -50,7 +52,6 @@ ForegroundColor = ConsoleColor.DarkYellow;
 string? azureResponse = await azureService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
 WriteLine(azureResponse);
 ResetColor();
-WriteLine("\n-------------------- Azure OpenAI Response --------------------");
 
 WriteLine("\n******************** Azure Streaming Response ********************");
 ForegroundColor = ConsoleColor.Green;
@@ -59,15 +60,13 @@ await foreach (var chunk in azureService.StreamPromptResponseAsync(prompt).Confi
     Write(chunk);
 }
 ResetColor();
-WriteLine("\n-------------------- Azure Streaming Response --------------------");
 
-WriteLine("\n******************** Hugging Face Response ********************");
+WriteLine("\n\n******************** Hugging Face Response ********************");
 ForegroundColor = ConsoleColor.Yellow;
 var huggingFaceService = host.Services.GetRequiredService<IHuggingFacePromptService>();
 string? huggingFaceResponse = await huggingFaceService.GetPromptResponseAsync(prompt).ConfigureAwait(false);
 WriteLine(huggingFaceResponse);
 ResetColor();
-WriteLine("\n-------------------- Hugging Face Response --------------------");
 
 WriteLine("\n******************** Hugging Face Streaming Response ********************");
 ForegroundColor = ConsoleColor.Blue;
@@ -76,7 +75,6 @@ await foreach (var chunk in huggingFaceService.StreamPromptResponseAsync(prompt)
     Write(chunk);
 }
 ResetColor();
-WriteLine("\n-------------------- Hugging Face Streaming Response --------------------");
 
 ResetColor();
 WriteLine("\n\nPress any key to exit...");

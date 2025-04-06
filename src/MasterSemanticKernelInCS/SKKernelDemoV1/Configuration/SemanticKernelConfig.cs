@@ -14,6 +14,10 @@ internal sealed class SemanticKernelConfig
 
     public string AzureModel { get; private set; }
 
+    public string HuggingFaceKey { get; private set; }
+
+    public string HuggingFaceModel { get; private set; }
+
     public bool UseOsEnvForSensitive { get; private set; }
 
     public SemanticKernelConfig(IConfiguration configuration, IEnvironmentProvider envProvider)
@@ -28,6 +32,12 @@ internal sealed class SemanticKernelConfig
 
         AzureModel = semanticKernelSection["AzureModel"]
                      ?? throw new InvalidOperationException("Missing AzureModel configuration.");
+
+        HuggingFaceKey = semanticKernelSection["HuggingFaceKey"]
+                         ?? throw new InvalidOperationException("Missing HuggingFaceKey configuration.");
+
+        HuggingFaceModel = semanticKernelSection["HuggingFaceModel"]
+                             ?? throw new InvalidOperationException("Missing HuggingFaceModel configuration.");
 
         if (UseOsEnvForSensitive)
         {

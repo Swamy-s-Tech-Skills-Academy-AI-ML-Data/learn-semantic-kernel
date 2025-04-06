@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using SKKernelDemoV1.Infrastructure;
 using SKKernelDemoV1.Kernels;
 using SKKernelDemoV1.Services;
@@ -14,9 +16,17 @@ Console.OutputEncoding = Encoding.UTF8;
 
 var host = HostBuilderFactory.BuildHost(args);
 
+Console.WriteLine("\n======== HuggingFace Llama 2 example ========\n");
+
 var hfKernel = host.Services.GetRequiredService<HuggingFaceKernelWrapper>();
 var hfChat = hfKernel.Kernel.GetRequiredService<IChatCompletionService>();
-var result = await hfChat.GetChatMessageContentAsync("Hi").ConfigureAwait(false);
+
+ChatHistory history = [];
+history.AddSystemMessage("You are a helpful assistant.");
+history.AddUserMessage("Hello, how are you?");
+
+var result = await hfChat.GetChatMessageContentAsync(history)
+    .ConfigureAwait(false);
 WriteLine(result.Content);
 
 var openAiService = host.Services.GetRequiredService<IOpenAIPromptService>();
